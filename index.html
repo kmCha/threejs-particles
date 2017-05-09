@@ -109,7 +109,8 @@ function init() {
         // }
         for (var i = 0; i < maxLength; i++) {
             showGeo.vertices.push(new THREE.Vector3(Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100)));
-            showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i]);
+            showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
+                                            .easing(TWEEN.Easing.Exponential.In);
         }
         var texture = new THREE.TextureLoader().load( "./assets/gradient.png" );
         var material = new THREE.PointsMaterial({
