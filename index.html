@@ -106,6 +106,7 @@ function init() {
         // }
         for (var i = 0; i < maxLength; i++) {
             showGeo.vertices.push(new THREE.Vector3(Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100)));
+            showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i]);
         }
         var texture = new THREE.TextureLoader().load( "./assets/gradient.png" );
         var material = new THREE.PointsMaterial({
@@ -147,26 +148,27 @@ function becomeArticles() {
     for (var i = 0; i < maxLength; i++) {
         tween = showGeo.vertices[i].tween;
         (function(i, count) {
-            // if (tween) {
-            //     tween.stop()
-            //         .to(articlesGeo.vertices[i], 500)
-            //         .delay(Math.floor(1000 * Math.random()))
-            //         .onUpdate(function() {
-            //             showGeo.vertices[i].set(this.x, this.y, this.z);
-            //             showGeo.verticesNeedUpdate = true;
-            //         })
-            //         .start();
-            // } else {
+            if (tween) {
+                tween.stop()
+                    .to(articlesGeo.vertices[count], 500)
+                    .delay(Math.floor(1000 * Math.random()) + i * 0.05)
+                    .onUpdate(function() {
+                        // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
+                        showGeo.vertices[i].set(this.x, this.y, this.z);
+                        showGeo.verticesNeedUpdate = true;
+                    })
+                    .start();
+            } else {
                 showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
                                                 .to(articlesGeo.vertices[count], 500)
                                                 .delay(Math.floor(1000 * Math.random()) + i * 0.05)
                                                 .onUpdate(function() {
-                                                    showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
-                                                    // showGeo.vertices[i].set(this.x, this.y, this.z);
+                                                    // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
+                                                    showGeo.vertices[i].set(this.x, this.y, this.z);
                                                     showGeo.verticesNeedUpdate = true;
                                                 })
                                                 .start();
-            // }
+            }
         }(i, count))
         if (count >= articlesLength - 1) {
             count = 0;
@@ -184,26 +186,27 @@ function becomeMain() {
     for (var i = 0; i < maxLength; i++) {
         tween = showGeo.vertices[i].tween;
         (function(i, count) {
-            // if (tween) {
-            //     tween.stop()
-            //         .to(articlesGeo.vertices[i], 500)
-            //         .delay(Math.floor(1000 * Math.random()))
-            //         .onUpdate(function() {
-            //             showGeo.vertices[i].set(this.x, this.y, this.z);
-            //             showGeo.verticesNeedUpdate = true;
-            //         })
-            //         .start();
-            // } else {
+            if (tween) {
+                tween.stop()
+                    .to(mainGeo.vertices[count], 500)
+                    .delay(Math.floor(1000 * Math.random()) + i * 0.05)
+                    .onUpdate(function() {
+                        // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
+                        showGeo.vertices[i].set(this.x, this.y, this.z);
+                        showGeo.verticesNeedUpdate = true;
+                    })
+                    .start();
+            } else {
                 showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
                                                 .to(mainGeo.vertices[count], 500)
                                                 .delay(Math.floor(1000 * Math.random()) + i * 0.05)
                                                 .onUpdate(function() {
-                                                    showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
-                                                    // showGeo.vertices[i].set(this.x, this.y, this.z);
+                                                    // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
+                                                    showGeo.vertices[i].set(this.x, this.y, this.z);
                                                     showGeo.verticesNeedUpdate = true;
                                                 })
                                                 .start();
-            // }
+            }
         }(i, count))
         if (count >= mainLength - 1) {
             count = 0;
