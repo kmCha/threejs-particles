@@ -95,14 +95,17 @@ function init() {
         maxLength = Math.max(mainLength, articlesLength);
         showGeo = new THREE.Geometry();
 
-        var count = 0;
+        // var count = 0;
+        // for (var i = 0; i < maxLength; i++) {
+        //     if (count >= mainLength) {
+        //         count = 0;
+        //     }
+        //     // showGeo.vertices.push(mainGeo.vertices[count++]);
+        //     showGeo.vertices.push(new THREE.Vector3(mainGeo.vertices[count].x, mainGeo.vertices[count].y, mainGeo.vertices[count].z));
+        //     count++;
+        // }
         for (var i = 0; i < maxLength; i++) {
-            if (count >= mainLength) {
-                count = 0;
-            }
-            // showGeo.vertices.push(mainGeo.vertices[count++]);
-            showGeo.vertices.push(new THREE.Vector3(mainGeo.vertices[count].x, mainGeo.vertices[count].y, mainGeo.vertices[count].z));
-            count++;
+            showGeo.vertices.push(new THREE.Vector3(Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100)));
         }
         var texture = new THREE.TextureLoader().load( "./assets/gradient.png" );
         var material = new THREE.PointsMaterial({
@@ -117,16 +120,12 @@ function init() {
         scene.add(dot);
 
         setTimeout(function() {
-            // var count = 0;
-            // for (var i = 0; i < maxLength; i++) {
-            //     if (count >= articlesLength) {
-            //         count = 0;
-            //     }
-            //     showGeo.vertices[i] = articlesGeo.vertices[i];
-            // }
-            // showGeo.verticesNeedUpdate = true;
-            becomeArticles();
+            becomeMain();
         }, 1000);
+
+        setTimeout(function() {
+            // becomeArticles();
+        }, 5000);
     });
 
 
@@ -178,11 +177,48 @@ function becomeArticles() {
     }
 }
 
+function becomeMain() {
+    var count = 0,
+        tween,
+        mainLength = mainGeo.vertices.length;
+    for (var i = 0; i < maxLength; i++) {
+        tween = showGeo.vertices[i].tween;
+        (function(i) {
+            // if (tween) {
+            //     tween.stop()
+            //         .to(articlesGeo.vertices[i], 500)
+            //         .delay(Math.floor(1000 * Math.random()))
+            //         .onUpdate(function() {
+            //             showGeo.vertices[i].set(this.x, this.y, this.z);
+            //             showGeo.verticesNeedUpdate = true;
+            //         })
+            //         .start();
+            // } else {
+                showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
+                                                .to(mainGeo.vertices[i], 500)
+                                                .delay(Math.floor(1000 * Math.random()) + i * 0.05)
+                                                .onUpdate(function() {
+                                                    showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
+                                                    // showGeo.vertices[i].set(this.x, this.y, this.z);
+                                                    showGeo.verticesNeedUpdate = true;
+                                                })
+                                                .start();
+            // }
+        }(count))
+        if (count >= mainLength - 1) {
+            count = 0;
+        } else {
+            count ++;
+        }
+        // showGeo.vertices[i] = articlesGeo.vertices[i];
+    }
+}
+
 function loadModels(callback) {
     var counter = 0,
         NUM_OF_MODELS = 2;
     var loader = new THREE.JSONLoader();
-    loader.load("./assets/blog1.json", function (geo, mat) {
+    loader.load("./assets/main.json", function (geo, mat) {
         mainGeo = geo;
         if (++counter === NUM_OF_MODELS) {
             callback && callback();
