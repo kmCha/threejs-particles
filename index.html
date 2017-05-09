@@ -36,6 +36,9 @@ var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
+var DUTATION = 500,
+    DELAY_BETWEEN_RATIO = 0.35;
+
 function init() {
 
 
@@ -124,8 +127,9 @@ function init() {
             becomeMain();
         }, 1000);
 
+        document.addEventListener( 'click', becomeArticles, false );
         setTimeout(function() {
-            becomeArticles();
+            // becomeArticles();
         }, 5000);
     });
 
@@ -150,8 +154,8 @@ function becomeArticles() {
         (function(i, count) {
             if (tween) {
                 tween.stop()
-                    .to(articlesGeo.vertices[count], 500)
-                    .delay(Math.floor(1000 * Math.random()) + i * 0.05)
+                    .to(articlesGeo.vertices[count], DUTATION)
+                    .delay(Math.floor(1000 * Math.random()) + i * DELAY_BETWEEN_RATIO)
                     .onUpdate(function() {
                         // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
                         showGeo.vertices[i].set(this.x, this.y, this.z);
@@ -160,8 +164,8 @@ function becomeArticles() {
                     .start();
             } else {
                 showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
-                                                .to(articlesGeo.vertices[count], 500)
-                                                .delay(Math.floor(1000 * Math.random()) + i * 0.05)
+                                                .to(articlesGeo.vertices[count], DUTATION)
+                                                .delay(Math.floor(1000 * Math.random()) + i * DELAY_BETWEEN_RATIO)
                                                 .onUpdate(function() {
                                                     // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
                                                     showGeo.vertices[i].set(this.x, this.y, this.z);
@@ -188,8 +192,8 @@ function becomeMain() {
         (function(i, count) {
             if (tween) {
                 tween.stop()
-                    .to(mainGeo.vertices[count], 500)
-                    .delay(Math.floor(1000 * Math.random()) + i * 0.05)
+                    .to(mainGeo.vertices[count], DUTATION)
+                    .delay(Math.floor(1000 * Math.random()) + i * DELAY_BETWEEN_RATIO)
                     .onUpdate(function() {
                         // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
                         showGeo.vertices[i].set(this.x, this.y, this.z);
@@ -198,8 +202,8 @@ function becomeMain() {
                     .start();
             } else {
                 showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
-                                                .to(mainGeo.vertices[count], 500)
-                                                .delay(Math.floor(1000 * Math.random()) + i * 0.05)
+                                                .to(mainGeo.vertices[count], DUTATION)
+                                                .delay(Math.floor(1000 * Math.random()) + i * DELAY_BETWEEN_RATIO)
                                                 .onUpdate(function() {
                                                     // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
                                                     showGeo.vertices[i].set(this.x, this.y, this.z);
@@ -221,7 +225,7 @@ function loadModels(callback) {
     var counter = 0,
         NUM_OF_MODELS = 2;
     var loader = new THREE.JSONLoader();
-    loader.load("./assets/main.json", function (geo, mat) {
+    loader.load("./assets/planet.json", function (geo, mat) {
         mainGeo = geo;
         if (++counter === NUM_OF_MODELS) {
             callback && callback();
