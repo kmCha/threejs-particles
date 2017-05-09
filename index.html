@@ -76,7 +76,8 @@ function init() {
             size: 0.3,
             map: texture,
             transparent: true,
-            alphaTest: 0.5
+            alphaTest: 0.5,
+            blending: THREE.AdditiveBlending,
         });
         var dot = new THREE.Points(showGeo, material);
 
