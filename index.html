@@ -5,6 +5,7 @@
     <script src="./libs/three.js"></script>
     <script src="./libs/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
+	<script src="./js/postprocessing/postprocessing.js"></script>
     <style>
     body {
         margin: 0;
@@ -18,6 +19,9 @@
 var renderer;
 var scene;
 var camera;
+
+var composer,
+    clock;
 
 var orbit;
 
@@ -56,6 +60,37 @@ function init() {
 
     orbit = new THREE.OrbitControls(camera);
 
+    // postprocessing
+
+	// composer = new THREE.EffectComposer( renderer );
+	// composer.addPass( new THREE.RenderPass( scene, camera ) );
+    //
+	// var effect = new THREE.ShaderPass( THREE.DotScreenShader );
+	// effect.uniforms[ 'scale' ].value = 4;
+	// composer.addPass( effect );
+    //
+	// var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
+	// effect.uniforms[ 'amount' ].value = 0;
+	// effect.renderToScreen = true;
+	// composer.addPass( effect );
+
+    composer = new POSTPROCESSING.EffectComposer(renderer);
+    composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
+
+    var pass = new POSTPROCESSING.BloomPass({
+        intensity: 2.0
+    });
+    pass.renderToScreen = true;
+    composer.addPass(pass);
+
+    // var pass = new POSTPROCESSING.BokehPass({
+    //     focus: 0.5
+    // });
+    // pass.renderToScreen = true;
+    // composer.addPass(pass);
+
+    clock = new THREE.Clock();
+
     loadModels(function() {
         var mainLength = mainGeo.vertices.length,
             articlesLength = articlesGeo.vertices.length;
@@ -73,7 +108,7 @@ function init() {
         }
         var texture = new THREE.TextureLoader().load( "./assets/gradient.png" );
         var material = new THREE.PointsMaterial({
-            size: 0.3,
+            size: 1,
             map: texture,
             transparent: true,
             alphaTest: 0.5,
@@ -177,11 +212,13 @@ function loadModels(callback) {
 
 var step = 0;
 function render() {
-    renderer.render(scene, camera);
+    // renderer.render(scene, camera);
     requestAnimationFrame(render);
     TWEEN.update();
 
     orbit.update();
+
+    composer.render(clock.getDelta());
 }
 
 // calls the init function when the window is done loading.
