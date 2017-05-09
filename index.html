@@ -124,7 +124,7 @@ function init() {
         }, 1000);
 
         setTimeout(function() {
-            // becomeArticles();
+            becomeArticles();
         }, 5000);
     });
 
@@ -146,7 +146,7 @@ function becomeArticles() {
         articlesLength = articlesGeo.vertices.length;
     for (var i = 0; i < maxLength; i++) {
         tween = showGeo.vertices[i].tween;
-        (function(i) {
+        (function(i, count) {
             // if (tween) {
             //     tween.stop()
             //         .to(articlesGeo.vertices[i], 500)
@@ -158,7 +158,7 @@ function becomeArticles() {
             //         .start();
             // } else {
                 showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
-                                                .to(articlesGeo.vertices[i], 500)
+                                                .to(articlesGeo.vertices[count], 500)
                                                 .delay(Math.floor(1000 * Math.random()) + i * 0.05)
                                                 .onUpdate(function() {
                                                     showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
@@ -167,7 +167,7 @@ function becomeArticles() {
                                                 })
                                                 .start();
             // }
-        }(count))
+        }(i, count))
         if (count >= articlesLength - 1) {
             count = 0;
         } else {
@@ -183,7 +183,7 @@ function becomeMain() {
         mainLength = mainGeo.vertices.length;
     for (var i = 0; i < maxLength; i++) {
         tween = showGeo.vertices[i].tween;
-        (function(i) {
+        (function(i, count) {
             // if (tween) {
             //     tween.stop()
             //         .to(articlesGeo.vertices[i], 500)
@@ -195,7 +195,7 @@ function becomeMain() {
             //         .start();
             // } else {
                 showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
-                                                .to(mainGeo.vertices[i], 500)
+                                                .to(mainGeo.vertices[count], 500)
                                                 .delay(Math.floor(1000 * Math.random()) + i * 0.05)
                                                 .onUpdate(function() {
                                                     showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
@@ -204,7 +204,7 @@ function becomeMain() {
                                                 })
                                                 .start();
             // }
-        }(count))
+        }(i, count))
         if (count >= mainLength - 1) {
             count = 0;
         } else {
