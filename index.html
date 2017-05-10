@@ -18,6 +18,21 @@
         margin: 0;
         overflow: hidden;
     }
+    .tabs {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        border: #fff solid 4px;
+        border-radius: 20px;
+        color: #fff;
+        padding: 0 5px;
+    }
+    .tabs span {
+        display: inline-block;
+        padding: 2px 5px;
+        margin: 0;
+        cursor: pointer;
+    }
     </style>
 </head>
 <script>
@@ -36,7 +51,19 @@ var particles;
 
 var showGeo,
     mainGeo,
-    articlesGeo;
+    articlesGeo,
+    categoriesGeo,
+    achievesGeo,
+    tagsGeo;
+
+var geos = {
+    show: null,
+    main: null,
+    articles: null,
+    categories: null,
+    achieves: null,
+    tags: null
+};
 
 var decorationObj;
 
@@ -116,11 +143,21 @@ function init() {
             playDecoration();
         }, 1000);
 
-        document.addEventListener( 'click', becomeArticles, false );
         setTimeout(function() {
             // becomeArticles();
         }, 5000);
 
+        document.querySelector('.articles').addEventListener('mouseover', transformTo.bind(null, 'articles'), false);
+        document.querySelector('.articles').addEventListener('mouseout', transformTo.bind(null, 'main'), false);
+
+        document.querySelector('.categories').addEventListener('mouseover', transformTo.bind(null, 'categories'), false);
+        document.querySelector('.categories').addEventListener('mouseout', transformTo.bind(null, 'main'), false);
+
+        document.querySelector('.achieves').addEventListener('mouseover', transformTo.bind(null, 'achieves'), false);
+        document.querySelector('.achieves').addEventListener('mouseout', transformTo.bind(null, 'main'), false);
+
+        document.querySelector('.tags').addEventListener('mouseover', transformTo.bind(null, 'tags'), false);
+        document.querySelector('.tags').addEventListener('mouseout', transformTo.bind(null, 'main'), false);
 
         // add the output of the renderer to the html element
         document.body.appendChild(renderer.domElement);
@@ -139,6 +176,7 @@ function addShowGeo() {
         articlesLength = articlesGeo.vertices.length;
     maxLength = Math.max(mainLength, articlesLength);
     showGeo = new THREE.Geometry();
+    geos.show = showGeo;
 
     for (var i = 0; i < maxLength; i++) {
         (function(i) {
@@ -223,37 +261,27 @@ function addDecorationGeo() {
     scene.add(decorationObj);
 }
 
-function becomeArticles() {
+function transformTo(type) {
     var count = 0,
         tween,
-        articlesLength = articlesGeo.vertices.length;
+        geo = geos[type],
+        length = geo.vertices.length;
     for (var i = 0; i < maxLength; i++) {
         tween = showGeo.vertices[i].tween;
         (function(i, count) {
-            // if (tween) {
-                tween.to({
-                        x: articlesGeo.vertices[count].x,
-                        y: articlesGeo.vertices[count].y,
-                        z: articlesGeo.vertices[count].z
-                    }, DURATION)
-                    .delay(DURATION * Math.random())
-                    .start();
-            // } else {
-            //     showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
-            //                                     .to({
-            //                                         x: articlesGeo.vertices[count].x,
-            //                                         y: articlesGeo.vertices[count].y,
-            //                                         z: articlesGeo.vertices[count].z
-            //                                     }, DURATION)
-            //                                     .start();
-            // }
+            tween.to({
+                    x: geo.vertices[count].x,
+                    y: geo.vertices[count].y,
+                    z: geo.vertices[count].z
+                }, DURATION)
+                .delay(DURATION * Math.random())
+                .start();
         }(i, count))
-        if (count >= articlesLength - 1) {
+        if (count >= length - 1) {
             count = 0;
         } else {
             count ++;
         }
-        // showGeo.vertices[i] = articlesGeo.vertices[i];
     }
 }
 
@@ -297,34 +325,46 @@ function playDecoration() {
 
 function loadModels(callback) {
     var counter = 0,
-        NUM_OF_MODELS = 2;
+        NUM_OF_MODELS = 5;
     var loader = new THREE.JSONLoader();
     loader.load("./assets/planet.json", function (geo, mat) {
         mainGeo = geo;
+        geos.main = mainGeo;
         if (++counter === NUM_OF_MODELS) {
             callback && callback();
         }
-        // var material = new THREE.PointsMaterial({
-        //     size: 2,
-        //     sizeAttenuation: false
-        // });
-        // var dot = new THREE.Points(mainGeo, material);
-
-        // scene.add(dot);
     });
 
     loader.load("./assets/storm-trooper.json", function (geo, mat) {
         articlesGeo = geo;
+        geos.articles = articlesGeo;
         if (++counter === NUM_OF_MODELS) {
             callback && callback();
         }
-        // var material = new THREE.PointsMaterial({
-        //     size: 2,
-        //     sizeAttenuation: false
-        // });
-        // var dot = new THREE.Points(articlesGeo, material);
-        //
-        // scene.add(dot);
+    });
+
+    loader.load("./assets/iron-man.json", function (geo, mat) {
+        achievesGeo = geo;
+        geos.achieves = achievesGeo;
+        if (++counter === NUM_OF_MODELS) {
+            callback && callback();
+        }
+    });
+
+    loader.load("./assets/atom.json", function (geo, mat) {
+        categoriesGeo = geo;
+        geos.categories = categoriesGeo;
+        if (++counter === NUM_OF_MODELS) {
+            callback && callback();
+        }
+    });
+
+    loader.load("./assets/air-craft.json", function (geo, mat) {
+        tagsGeo = geo;
+        geos.tags = tagsGeo;
+        if (++counter === NUM_OF_MODELS) {
+            callback && callback();
+        }
     });
 }
 
@@ -360,5 +400,11 @@ window.onload = init;
 
 </script>
 <body>
+    <div class="tabs">
+        <span class="articles">文章</span>
+        <span class="categories">分类</span>
+        <span class="achieves">归档</span>
+        <span class="tags">标签</span>
+    </div>
 </body>
 </html>
