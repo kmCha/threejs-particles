@@ -4,7 +4,15 @@
     <title>06.01 - Create a point cloud from an existing geometry</title>
     <script src="./libs/three.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/16.3.5/Tween.min.js"></script>
-	<script src="./js/postprocessing/postprocessing.js"></script>
+    <script src="./js/postprocessing/ConvolutionShader.js"></script>
+    <script src="./js/postprocessing/CopyShader.js"></script>
+    <script src="./js/postprocessing/FilmShader.js"></script>
+    <script src="./js/postprocessing/EffectComposer.js"></script>
+    <script src="./js/postprocessing/FilmPass.js"></script>
+    <script src="./js/postprocessing/BloomPass.js"></script>
+    <script src="./js/postprocessing/RenderPass.js"></script>
+    <script src="./js/postprocessing/ShaderPass.js"></script>
+	<script src="./js/postprocessing/FocusShader.js"></script>
     <style>
     body {
         margin: 0;
@@ -36,8 +44,8 @@ var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
-var DURATION = 500,
-    DELAY_BETWEEN_RATIO = 0.01;
+var DURATION = 800,
+    DELAY_BETWEEN_RATIO = 0.05;
 
 function init() {
 
@@ -54,6 +62,7 @@ function init() {
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor(0x000000);
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.autoClear = false;
 
     // position and point the camera to the center of the scene
     camera.position.x = 0;
@@ -63,34 +72,38 @@ function init() {
 
     // postprocessing
 
-	// composer = new THREE.EffectComposer( renderer );
-	// composer.addPass( new THREE.RenderPass( scene, camera ) );
+	composer = new THREE.EffectComposer( renderer );
+    var renderPass = new THREE.RenderPass( scene, camera );
+
+	var shaderPass = new THREE.ShaderPass( THREE.FocusShader );
+    shaderPass.uniforms.screenWidth.value = window.innerWidth;
+    shaderPass.uniforms.screenHeight.value = window.innerHeight;
+    shaderPass.renderToScreen = true;
+
+	var bloomPass = new THREE.BloomPass( 1.75 );
+
+    composer.addPass(renderPass);
+    composer.addPass(bloomPass);
+    composer.addPass(shaderPass);
+
+    // composer = new POSTPROCESSING.EffectComposer(renderer);
+    // composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
     //
-	// var effect = new THREE.ShaderPass( THREE.DotScreenShader );
-	// effect.uniforms[ 'scale' ].value = 4;
-	// composer.addPass( effect );
-    //
-	// var effect = new THREE.ShaderPass( THREE.RGBShiftShader );
-	// effect.uniforms[ 'amount' ].value = 0;
-	// effect.renderToScreen = true;
-	// composer.addPass( effect );
-
-    composer = new POSTPROCESSING.EffectComposer(renderer);
-    composer.addPass(new POSTPROCESSING.RenderPass(scene, camera));
-
-    var pass = new POSTPROCESSING.BloomPass({
-        intensity: 2.0
-    });
-    pass.renderToScreen = true;
-    composer.addPass(pass);
-
-    // var pass = new POSTPROCESSING.BokehPass({
-    //     focus: 0.5
+    // var pass = new POSTPROCESSING.BloomPass({
+    //     intensity: 2.0
     // });
     // pass.renderToScreen = true;
     // composer.addPass(pass);
 
-    clock = new THREE.Clock();
+    // var pass = new POSTPROCESSING.BokehPass(camera, {
+    //     focus: 0.03,
+    //     blur: 0.9,
+    //     aperture: 0.07
+    // });
+    // pass.renderToScreen = true;
+    // composer.addPass(pass);
+
+    // clock = new THREE.Clock();
 
     loadModels(function() {
         var mainLength = mainGeo.vertices.length,
@@ -273,8 +286,8 @@ function render() {
 	camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
 	camera.lookAt( scene.position );
 
-
-    composer.render(clock.getDelta());
+    renderer.clear();
+    composer.render();
 }
 
 // calls the init function when the window is done loading.
