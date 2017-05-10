@@ -177,19 +177,23 @@ function becomeArticles() {
     for (var i = 0; i < maxLength; i++) {
         tween = showGeo.vertices[i].tween;
         (function(i, count) {
-            if (tween) {
-                tween.to(articlesGeo.vertices[count], DURATION)
+            // if (tween) {
+                tween.to({
+                        x: articlesGeo.vertices[count].x,
+                        y: articlesGeo.vertices[count].y,
+                        z: articlesGeo.vertices[count].z
+                    }, DURATION)
                     .delay(DURATION * Math.random())
                     .start();
-            } else {
-                showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
-                                                .to({
-                                                    x: articlesGeo.vertices[count].x,
-                                                    y: articlesGeo.vertices[count].y,
-                                                    z: articlesGeo.vertices[count].z
-                                                }, DURATION)
-                                                .start();
-            }
+            // } else {
+            //     showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
+            //                                     .to({
+            //                                         x: articlesGeo.vertices[count].x,
+            //                                         y: articlesGeo.vertices[count].y,
+            //                                         z: articlesGeo.vertices[count].z
+            //                                     }, DURATION)
+            //                                     .start();
+            // }
         }(i, count))
         if (count >= articlesLength - 1) {
             count = 0;
@@ -207,19 +211,23 @@ function becomeMain() {
     for (var i = 0; i < maxLength; i++) {
         tween = showGeo.vertices[i].tween;
         (function(i, count) {
-            if (tween) {
-                tween.to(mainGeo.vertices[count], DURATION)
+            // if (tween) {
+                tween.to({
+                        x: mainGeo.vertices[count].x,
+                        y: mainGeo.vertices[count].y,
+                        z: mainGeo.vertices[count].z
+                    }, DURATION)
                     .delay(Math.floor(1000 * Math.random()) + i * DELAY_BETWEEN_RATIO)
                     .start();
-            } else {
-                showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
-                                                .to({
-                                                    x: mainGeo.vertices[count].x,
-                                                    y: mainGeo.vertices[count].y,
-                                                    z: mainGeo.vertices[count].z
-                                                }, DURATION)
-                                                .start();
-            }
+            // } else {
+            //     showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
+            //                                     .to({
+            //                                         x: mainGeo.vertices[count].x,
+            //                                         y: mainGeo.vertices[count].y,
+            //                                         z: mainGeo.vertices[count].z
+            //                                     }, DURATION)
+            //                                     .start();
+            // }
         }(i, count))
         if (count >= mainLength - 1) {
             count = 0;
