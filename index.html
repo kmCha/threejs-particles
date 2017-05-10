@@ -80,7 +80,7 @@ function init() {
     shaderPass.uniforms.screenHeight.value = window.innerHeight;
     shaderPass.renderToScreen = true;
 
-	var bloomPass = new THREE.BloomPass( 1.75 );
+	var bloomPass = new THREE.BloomPass( 1.15 );
 
     composer.addPass(renderPass);
     composer.addPass(bloomPass);
