@@ -45,7 +45,7 @@ var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
 var DURATION = 800,
-    DELAY_BETWEEN_RATIO = 0.05;
+    DELAY_BETWEEN_RATIO = 0.35;
 
 function init() {
 
@@ -129,8 +129,6 @@ function init() {
                                                     z: showGeo.vertices[i].z
                                                 })
                                                 .easing(TWEEN.Easing.Exponential.In)
-                                                .delay(DURATION * Math.random())
-                                                // .delay(Math.floor(1000 * Math.random()) + i * DELAY_BETWEEN_RATIO)
                                                 .onUpdate(function() {
                                                     // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
                                                     showGeo.vertices[i].set(this.x, this.y, this.z);
@@ -158,18 +156,18 @@ function init() {
         setTimeout(function() {
             // becomeArticles();
         }, 5000);
+
+
+        // add the output of the renderer to the html element
+        document.body.appendChild(renderer.domElement);
+
+        document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+        window.addEventListener( 'resize', onWindowResize, false );
+
+        // call the render function
+        render();
     });
-
-
-    // add the output of the renderer to the html element
-    document.body.appendChild(renderer.domElement);
-
-    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
-    window.addEventListener( 'resize', onWindowResize, false );
-
-    // call the render function
-    render();
 }
 
 function becomeArticles() {
@@ -181,6 +179,7 @@ function becomeArticles() {
         (function(i, count) {
             if (tween) {
                 tween.to(articlesGeo.vertices[count], DURATION)
+                    .delay(DURATION * Math.random())
                     .start();
             } else {
                 showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
@@ -210,6 +209,7 @@ function becomeMain() {
         (function(i, count) {
             if (tween) {
                 tween.to(mainGeo.vertices[count], DURATION)
+                    .delay(Math.floor(1000 * Math.random()) + i * DELAY_BETWEEN_RATIO)
                     .start();
             } else {
                 showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
