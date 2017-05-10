@@ -38,6 +38,8 @@ var showGeo,
     mainGeo,
     articlesGeo;
 
+var decorationObj;
+
 var maxLength;
 
 var mouseX = 0, mouseY = 0;
@@ -106,50 +108,12 @@ function init() {
     // clock = new THREE.Clock();
 
     loadModels(function() {
-        var mainLength = mainGeo.vertices.length,
-            articlesLength = articlesGeo.vertices.length;
-        maxLength = Math.max(mainLength, articlesLength);
-        showGeo = new THREE.Geometry();
-
-        // var count = 0;
-        // for (var i = 0; i < maxLength; i++) {
-        //     if (count >= mainLength) {
-        //         count = 0;
-        //     }
-        //     // showGeo.vertices.push(mainGeo.vertices[count++]);
-        //     showGeo.vertices.push(new THREE.Vector3(mainGeo.vertices[count].x, mainGeo.vertices[count].y, mainGeo.vertices[count].z));
-        //     count++;
-        // }
-        for (var i = 0; i < maxLength; i++) {
-            (function(i) {
-                showGeo.vertices.push(new THREE.Vector3(Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100)));
-                showGeo.vertices[i].tween = new TWEEN.Tween({
-                                                    x: showGeo.vertices[i].x,
-                                                    y: showGeo.vertices[i].y,
-                                                    z: showGeo.vertices[i].z
-                                                })
-                                                .easing(TWEEN.Easing.Exponential.In)
-                                                .onUpdate(function() {
-                                                    // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
-                                                    showGeo.vertices[i].set(this.x, this.y, this.z);
-                                                    showGeo.verticesNeedUpdate = true;
-                                                });
-            })(i)
-        }
-        var texture = new THREE.TextureLoader().load( "./assets/gradient.png" );
-        var material = new THREE.PointsMaterial({
-            size: 1,
-            map: texture,
-            transparent: true,
-            alphaTest: 0.5,
-            blending: THREE.AdditiveBlending,
-        });
-        var dot = new THREE.Points(showGeo, material);
-
-        scene.add(dot);
+        addShowGeo();
+        addDecorationGeo();
 
         setTimeout(function() {
             becomeMain();
+            playDecoration();
         }, 1000);
 
         document.addEventListener( 'click', becomeArticles, false );
@@ -168,6 +132,95 @@ function init() {
         // call the render function
         render();
     });
+}
+
+function addShowGeo() {
+    var mainLength = mainGeo.vertices.length,
+        articlesLength = articlesGeo.vertices.length;
+    maxLength = Math.max(mainLength, articlesLength);
+    showGeo = new THREE.Geometry();
+
+    for (var i = 0; i < maxLength; i++) {
+        (function(i) {
+            showGeo.vertices.push(new THREE.Vector3(Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100)));
+            showGeo.vertices[i].tween = new TWEEN.Tween({
+                                                x: showGeo.vertices[i].x,
+                                                y: showGeo.vertices[i].y,
+                                                z: showGeo.vertices[i].z
+                                            })
+                                            .easing(TWEEN.Easing.Exponential.In)
+                                            .onUpdate(function() {
+                                                // showGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
+                                                showGeo.vertices[i].set(this.x, this.y, this.z);
+                                                showGeo.verticesNeedUpdate = true;
+                                            });
+        })(i)
+    }
+    var texture = new THREE.TextureLoader().load( "./assets/gradient.png" );
+    var material = new THREE.PointsMaterial({
+        size: 1,
+        map: texture,
+        transparent: true,
+        alphaTest: 0.5,
+        blending: THREE.AdditiveBlending,
+    });
+    var dot = new THREE.Points(showGeo, material);
+
+    scene.add(dot);
+}
+
+function addDecorationGeo() {
+    var decorationGeo = new THREE.Geometry();
+
+    for (var i = 0; i < 500; i++) {
+        (function(i) {
+            decorationGeo.vertices.push(new THREE.Vector3(100, Math.floor(200 * Math.random() - 100), Math.floor(200 * Math.random() - 100)));
+            decorationGeo.vertices[i].tween = new TWEEN.Tween({
+                                                x: decorationGeo.vertices[i].x
+                                            })
+                                            .to({
+                                                x: -100
+                                            }, 20000)
+                                            .delay(20000 * Math.random())
+                                            .onUpdate(function() {
+                                                // decorationGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
+                                                decorationGeo.vertices[i].x = this.x;
+                                                decorationGeo.verticesNeedUpdate = true;
+                                            })
+                                            .repeat(Infinity)
+                                            .start();
+        })(i)
+    }
+    for (var i = 500; i < 1000; i++) {
+        (function(i) {
+            decorationGeo.vertices.push(new THREE.Vector3(Math.floor(200 * Math.random() - 100), -100, Math.floor(200 * Math.random() - 100)));
+            decorationGeo.vertices[i].tween = new TWEEN.Tween({
+                                                y: decorationGeo.vertices[i].y
+                                            })
+                                            .to({
+                                                y: 100
+                                            }, 20000)
+                                            .delay(20000 * Math.random())
+                                            .onUpdate(function() {
+                                                // decorationGeo.vertices[i] = new THREE.Vector3(this.x, this.y, this.z);
+                                                decorationGeo.vertices[i].y = this.y;
+                                                decorationGeo.verticesNeedUpdate = true;
+                                            })
+                                            .repeat(Infinity)
+                                            .start();
+        })(i)
+    }
+    var texture = new THREE.TextureLoader().load( "./assets/gradient.png" );
+    var material = new THREE.PointsMaterial({
+        size: 1,
+        map: texture,
+        transparent: true,
+        alphaTest: 0.5,
+        blending: THREE.AdditiveBlending,
+        opacity: 0.8
+    });
+    decorationObj = new THREE.Points(decorationGeo, material);
+    scene.add(decorationObj);
 }
 
 function becomeArticles() {
@@ -236,6 +289,10 @@ function becomeMain() {
         }
         // showGeo.vertices[i] = articlesGeo.vertices[i];
     }
+}
+
+function playDecoration() {
+
 }
 
 function loadModels(callback) {
