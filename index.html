@@ -138,14 +138,8 @@ function init() {
         addShowGeo();
         addDecorationGeo();
 
-        setTimeout(function() {
-            becomeMain();
-            playDecoration();
-        }, 1000);
-
-        setTimeout(function() {
-            // becomeArticles();
-        }, 5000);
+        becomeMain();
+        playDecoration();
 
         document.querySelector('.articles').addEventListener('mouseover', transformTo.bind(null, 'articles'), false);
         document.querySelector('.articles').addEventListener('mouseout', transformTo.bind(null, 'main'), false);
@@ -298,7 +292,7 @@ function becomeMain() {
                         y: mainGeo.vertices[count].y,
                         z: mainGeo.vertices[count].z
                     }, DURATION)
-                    .delay(Math.floor(1000 * Math.random()) + i * DELAY_BETWEEN_RATIO)
+                    .delay(Math.floor(1000 * Math.random()) + i * DELAY_BETWEEN_RATIO + 1000)
                     .start();
             // } else {
             //     showGeo.vertices[i].tween = new TWEEN.Tween(showGeo.vertices[i])
